@@ -85,25 +85,3 @@ class MidiBridge:
         if executed == False:
             print("no command found for", msg)
             self.callback("msg_received", params={'text': "no command found for" + msg})
-
-    # async def connected(self):
-    #
-    # async def stop(self):
-    #
-    # async def select_clip_by_index(self, clip_index):
-    #
-    # async def select_clip_by_offset(self, clip_offset):
-    #
-    # async def update_status(self):
-    #
-    # async def enable_notifications(self, slot=True, remote=True, config=True):
-    #
-    # async def _send_command(self, command):
-    #
-    # async def _poll_state(self):
-    #
-    # async def _parse_responses(self):
-    #
-    # async def _send(self, data):
-    #
-    # async def _receive(self):
