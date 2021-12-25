@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+
+<html lang="en-US">
+<head>
+    <meta charset="UTF-8">
+
+    <title>Blackmagic Design - Hyperdeck UI</title>
+
+    <link rel="stylesheet" type="text/css" href="resources/style.css"/>
+</head>
+
+<body>
+<div id="container">
+    <h1>Blackmagic Design - Hyperdeck UI</h1>
+    <div id="controls">
+        <div class="header">
+            <div id="playback">
+                <label><input type="checkbox" id="loop">Loop</label>
+                <label><input type="checkbox" id="single" checked="true">Single Clip</label>
+                <label><input type="range" min="-16" max="16" step="0.25" value="1.0" class="slider" id="speed"><span>Speed </span><span
+                        id="speed_val"></span></label>
+            </div>
+            <div id="transport">
+                <button id="record"></button>
+                <button id="play"></button>
+                <button id="stop"></button>
+                <button id="prev"></button>
+                <button id="next"></button>
+            </div>
+        </div>
+        <div id="status">
+            <span>State: </span><span id="state"></span>
+            <button id="state_refresh" class="reset"></button>
+        </div>
+        <div id="media">
+            <label>Clips:
+                <select id="clips" size="10"></select>
+            </label>
+            <button id="clips_refresh" class="reset"></button>
+        </div>
+
+        <h3>Blackmanik Design - Hypernick MIDI</h3>
+
+        <div id="midi">
+            <label>Midi Inputs:
+                <select id="midi_inputs" size="3"></select>
+            </label>
+
+        </div>
+    </div>
+    <div id="info">
+        <span>Sent:</span>
+        <pre id="sent"></pre>
+
+        <span>Received:</span>
+        <pre id="received"></pre>
+    </div>
+
+
+</div>
+
+<script type="text/javascript" src="resources/frontend.js"></script>
+</body>
+</html>
