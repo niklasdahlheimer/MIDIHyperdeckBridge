@@ -6,7 +6,7 @@ midi_channel = 9  # midi channels are 0-15
 base_msg = mido.Message('control_change', channel=midi_channel)
 
 
-class mapping_info:
+class MappingInfo:
     def __init__(self, name, msg, func):
         self.name = name
         self.msg = msg
@@ -26,40 +26,40 @@ class MidiBridge:
 
     def __init__(self, hyperdeck):
         self._hyperdeck = hyperdeck
-        self.assignSongs()
+        self.assign_songs()
 
-    def assignSongs(self):
+    def assign_songs(self):
         select_clip = self._hyperdeck.select_clip_by_index
         play = self._hyperdeck.play
 
         self.cmd_list.append(
-            mapping_info('Play Command',
-                         base_msg.copy(value=10),
-                         lambda: play()))
+            MappingInfo('Play Command',
+                        base_msg.copy(value=10),
+                        lambda: play()))
         self.cmd_list.append(
-            mapping_info('Glanz und Gloria Select',
-                         base_msg.copy(value=10),
-                         lambda: select_clip(1)))
+            MappingInfo('Glanz und Gloria Select',
+                        base_msg.copy(value=10),
+                        lambda: select_clip(1)))
         self.cmd_list.append(
-            mapping_info('Glanz und Gloria Play',
-                         base_msg.copy(value=10),
-                         lambda: select_clip(1)))
+            MappingInfo('Glanz und Gloria Play',
+                        base_msg.copy(value=10),
+                        lambda: select_clip(1)))
         self.cmd_list.append(
-            mapping_info('1000kg Konfetti',
-                         base_msg.copy(value=20),
-                         lambda: select_clip(1)))
+            MappingInfo('1000kg Konfetti',
+                        base_msg.copy(value=20),
+                        lambda: select_clip(1)))
         self.cmd_list.append(
-            mapping_info('Medley',
-                         base_msg.copy(value=30),
-                         lambda: select_clip(1)))
+            MappingInfo('Medley',
+                        base_msg.copy(value=30),
+                        lambda: select_clip(1)))
         self.cmd_list.append(
-            mapping_info('100.000 Stimmen',
-                         base_msg.copy(value=40),
-                         lambda: select_clip(1)))
+            MappingInfo('100.000 Stimmen',
+                        base_msg.copy(value=40),
+                        lambda: select_clip(1)))
         self.cmd_list.append(
-            mapping_info('Tanzen',
-                         base_msg.copy(value=50),
-                         lambda: select_clip(1)))
+            MappingInfo('Tanzen',
+                        base_msg.copy(value=50),
+                        lambda: select_clip(1)))
 
     def set_callback(self, callback):
         self.callback = callback
