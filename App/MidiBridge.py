@@ -82,6 +82,6 @@ class MidiBridge:
                 cmd.func()
                 self.callback.on_midi_msg_received(cmd.name)
 
-        if executed == False:
+        if not executed:
             print("no command found for", msg)
             self.callback("msg_received", params={'text': "no command found for" + msg})
