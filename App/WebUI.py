@@ -1,6 +1,6 @@
 import asyncio
-import logging
 import json
+import logging
 
 try:
     import aiohttp
@@ -97,8 +97,7 @@ class WebUI:
             await self._midi_bridge_send_midi_inputs()
         elif command == "midi_input_select":
             device_name = params.get('name', False)
-            print(device_name)
-            await self._midi_bridge.connect(device_name)
+            self._midi_bridge.connect(device_name)
 
     async def _send_websocket_message(self, message):
         if self._websocket is None or self._websocket.closed:
@@ -181,11 +180,10 @@ class WebUI:
                 }
             })
 
-    async def _midi_bridge_callback(self,event,params=None):
+    async def _midi_bridge_callback(self, event, params=None):
         await self._send_websocket_message({
             'response': 'midi_message_received',
             'params': {
                 'text': params.text
             }
         })
-
