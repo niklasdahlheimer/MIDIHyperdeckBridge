@@ -67,13 +67,12 @@ class MidiBridge:
     def get_inputs(self):
         return mido.get_input_names()
 
-    async def connect(self, name):
+    def connect(self, name):
         self.logger.info("try to get input messages from " + name)
-        with mido.open_input(name) as in_port:
-            for msg in in_port:
-                self.on_midi_message_receive(msg)
+        mido.open_input(name, virtual=False, callback=self.on_midi_message_receive)
 
     def on_midi_message_receive(self, msg):
+        self.logger.info("received msg!")
         print(msg)
         executed = False
         for cmd in self.cmd_list:
