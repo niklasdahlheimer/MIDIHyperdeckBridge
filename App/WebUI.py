@@ -26,6 +26,8 @@ class WebUI:
     async def start(self, hyperdeck, midibridge):
         self._hyperdeck = hyperdeck
         self._midi_bridge = midibridge
+        self._hyperdeck.set_callback(self._hyperdeck_event)
+        self._midi_bridge.set_callback(self._midi_bridge_callback)
 
         # Add routes for the static front-end HTML file, the websocket, and the resources directory.
         app = web.Application()
@@ -37,7 +39,6 @@ class WebUI:
         return await self._loop.create_server(app.make_handler(), "localhost", self.port)
 
     async def _http_request_get_frontend_html(self, request):
-        self.logger.info("query frontend")
         return web.FileResponse(path=str('WebUI/WebUI.html'))
 
     async def _http_request_get_websocket(self, request):
@@ -45,8 +46,6 @@ class WebUI:
         await ws.prepare(request)
 
         self._websocket = ws
-        await self._hyperdeck.set_callback(self._hyperdeck_event)
-        self._midi_bridge.set_callback(self._midi_bridge_callback)
 
         async for msg in ws:
             if msg.type == aiohttp.WSMsgType.TEXT:
@@ -97,7 +96,7 @@ class WebUI:
             await self._midi_bridge_send_midi_inputs()
         elif command == "midi_input_select":
             device_name = params.get('name', False)
-            self._midi_bridge.connect(device_name)
+            await self._midi_bridge.connect(device_name)
 
     async def _send_websocket_message(self, message):
         if self._websocket is None or self._websocket.closed:
@@ -184,6 +183,6 @@ class WebUI:
         await self._send_websocket_message({
             'response': 'midi_message_received',
             'params': {
-                'text': params.text
+                'text': params["text"]
             }
         })

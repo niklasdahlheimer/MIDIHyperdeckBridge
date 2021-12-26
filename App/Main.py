@@ -18,14 +18,14 @@ async def main(loop, args):
 
 
 if __name__ == "__main__":
-    logging.basicConfig(format='%(name)s %(levelname)s: %(message)s', level=logging.INFO)
+    logging.basicConfig(format='%(name)s %(levelname)s: %(message)s', level=logging.WARNING)
 
     # Configure log level for the various modules.
     loggers = {
         'WebUI': logging.DEBUG,
         'HyperDeck': logging.INFO,
         'MidiBridge': logging.INFO,
-        'aiohttp': logging.DEBUG,
+        'aiohttp': logging.WARNING,
     }
     for name, level in loggers.items():
         logger = logging.getLogger(name)

@@ -24,6 +24,7 @@ var prev = document.getElementById("prev");
 var next = document.getElementById("next");
 var sent = document.getElementById("sent");
 var received = document.getElementById("received");
+var midi_received = document.getElementById("midi_received");
 var midi_inputs = document.getElementById("midi_inputs");
 
 // Bind HTML elements to HyperDeck commands
@@ -31,7 +32,6 @@ speed.oninput = function () {
     speed_val.innerHTML = parseFloat(speed.value).toFixed(2);
 };
 record.onclick = function () {
-    console.log("record clicked")
     var command = {
         "command": "record"
     };
@@ -98,7 +98,6 @@ ws.onopen = function () {
     ws.send(JSON.stringify(command));
 };
 midi_inputs.onchange = function () {
-    console.log(midi_inputs)
     const selectInput = midi_inputs.options[midi_inputs.selectedIndex].text;
 
     const command = {
@@ -125,15 +124,12 @@ ws.onmessage = function (message) {
 
         case "clip_info":
             clips.options[data.params["id"] - 1].text = "[" + data.params["duration"] + "] " + data.params["name"];
-
             break;
-
         case "status":
             if (data.params["status"] !== undefined)
                 state.innerHTML = data.params["status"] + " [" + data.params["timecode"] + "]";
             else
                 state.innerHTML = "Unknown";
-
             break;
 
         case "transcript":
@@ -150,16 +146,17 @@ ws.onmessage = function (message) {
             }
             break;
         case "clear_midi_inputs":
-            console.log("requested clearing midi inputs");
             midi_inputs.innerHTML = "";
-
             break;
         case "midi_input":
-            console.log("added midi input" + data.params["name"]);
             midi_inputs.add(new Option(data.params["name"]));
+            break;
+        case "midi_message_received":
+             midi_received.innerHTML = data.params["text"];
+            break;
 
     }
-    ;
+
 };
 
 // Initial control setup once the page is loaded

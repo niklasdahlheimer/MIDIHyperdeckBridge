@@ -1,23 +1,22 @@
+import asyncio
 import logging
-
 import mido
+import SongMapping
 
-midi_channel = 9  # midi channels are 0-15
-base_msg = mido.Message('control_change', channel=midi_channel)
+# https://stackoverflow.com/questions/56277440/how-can-i-integrate-python-mido-and-asyncio
+def make_stream():
+    loop = asyncio.get_event_loop()
+    queue = asyncio.Queue()
 
+    def callback(message):
+        loop.call_soon_threadsafe(queue.put_nowait, message)
 
-class MappingInfo:
-    def __init__(self, name, msg, func):
-        self.name = name
-        self.msg = msg
-        self.func = func
+    async def stream():
+        while True:
+            yield await queue.get()
 
+    return callback, stream()
 
-# creating list
-
-
-# We can also access instances attributes
-# as list[0].name, list[0].roll and so on.
 
 class MidiBridge:
     logger = logging.getLogger(__name__)
@@ -29,58 +28,35 @@ class MidiBridge:
         self.assign_songs()
 
     def assign_songs(self):
-        select_clip = self._hyperdeck.select_clip_by_index
-        play = self._hyperdeck.play
-
-        self.cmd_list.append(
-            MappingInfo('Play Command',
-                        base_msg.copy(value=10),
-                        lambda: play()))
-        self.cmd_list.append(
-            MappingInfo('Glanz und Gloria Select',
-                        base_msg.copy(value=10),
-                        lambda: select_clip(1)))
-        self.cmd_list.append(
-            MappingInfo('Glanz und Gloria Play',
-                        base_msg.copy(value=10),
-                        lambda: select_clip(1)))
-        self.cmd_list.append(
-            MappingInfo('1000kg Konfetti',
-                        base_msg.copy(value=20),
-                        lambda: select_clip(1)))
-        self.cmd_list.append(
-            MappingInfo('Medley',
-                        base_msg.copy(value=30),
-                        lambda: select_clip(1)))
-        self.cmd_list.append(
-            MappingInfo('100.000 Stimmen',
-                        base_msg.copy(value=40),
-                        lambda: select_clip(1)))
-        self.cmd_list.append(
-            MappingInfo('Tanzen',
-                        base_msg.copy(value=50),
-                        lambda: select_clip(1)))
+        select_clip_func = self._hyperdeck.select_clip_by_index
+        play_func = self._hyperdeck.play
+        SongMapping.assign_songs_to_list(self.cmd_list,select_clip_func,play_func)
 
     def set_callback(self, callback):
+        print("set callback to", str(callback))
         self.callback = callback
 
-    def get_inputs(self):
+    @staticmethod
+    def get_inputs():
         return mido.get_input_names()
 
-    def connect(self, name):
+    async def connect(self, name):
         self.logger.info("try to get input messages from " + name)
-        mido.open_input(name, virtual=False, callback=self.on_midi_message_receive)
+        # create a callback/stream pair and pass callback to mido
+        cb, stream = make_stream()
+        mido.open_input(name, virtual=False, callback=cb)
 
-    def on_midi_message_receive(self, msg):
-        self.logger.info("received msg!")
-        print(msg)
+        # print messages as they come just by reading from stream
+        async for message in stream:
+            await self.on_midi_message_receive(message)
+
+    async def on_midi_message_receive(self, msg):
         executed = False
         for cmd in self.cmd_list:
             if cmd.msg == msg:
                 executed = True
-                cmd.func()
-                self.callback.on_midi_msg_received(cmd.name)
+                await cmd.func()
+                await self.callback(cmd.name, params={'text': str(msg)})
 
         if not executed:
-            print("no command found for", str(msg))
-            self.callback("msg_received", params={'text': "no command found for" + str(msg)})
+            await self.callback("msg_received", params={'text': "no command found for " + str(msg)})

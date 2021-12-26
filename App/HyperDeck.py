@@ -16,7 +16,7 @@ class HyperDeck:
         self._callback = None
         self._response_future = None
 
-    async def set_callback(self, callback):
+    def set_callback(self, callback):
         # This callback is invoked each time the HyperDeck's state changes.
         self._callback = callback
 
