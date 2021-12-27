@@ -55,7 +55,7 @@ class MidiBridge:
             if cmd.msg == msg:
                 executed = True
                 await cmd.func()
-                await self.callback(cmd.name, params={'text': str(msg)})
+                asyncio.create_task(self.callback(cmd.name, params={'text': str(msg)}))
 
         if not executed:
-            await self.callback("msg_received", params={'text': "no command found for " + str(msg)})
+            asyncio.create_task(self.callback("msg_received", params={'text': "no command found for " + str(msg)}))
