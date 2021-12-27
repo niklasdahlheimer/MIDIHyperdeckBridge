@@ -10,6 +10,8 @@ midi_channel = 9  # midi channels are 0-15
 song_select_base_msg = mido.Message('song_select')
 play_base_msg = mido.Message('control_change', channel=midi_channel)
 
+# https://mido.readthedocs.io/en/latest/message_types.html?highlight=song_select#supported-messages
+# https://mido.readthedocs.io/en/latest/message_types.html?highlight=song_select#parameter-types
 def assign_songs_to_list(cmd_list, select_clip, play):
     cmd_list.append(
         MappingInfo('Play Command',
