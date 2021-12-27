@@ -183,6 +183,6 @@ class WebUI:
         await self._send_websocket_message({
             'response': 'midi_message_received',
             'params': {
-                'text': params["text"]
+                'text': params["cmd"]+":"+params["message"]
             }
         })

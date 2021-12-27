@@ -34,12 +34,12 @@ h1 {
 #container #controls, #midi-controls {
     display: inline-block;
     vertical-align: top;
-    width: 54%;
+    width: 40%;
     margin-right: 5%;
 }
 
 #container #info {
-    width: 40%;
+    width: 54%;
 }
 
 .header {
@@ -217,7 +217,7 @@ input[type=range]::-webkit-slider-runnable-track {
     width: 100%;
     height: 3px;
     cursor: pointer;
-    box-shadow: 0;
+    box-shadow: none;
     background: black;
     border: 0;
 }

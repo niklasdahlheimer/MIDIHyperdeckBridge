@@ -152,7 +152,7 @@ ws.onmessage = function (message) {
             midi_inputs.add(new Option(data.params["name"]));
             break;
         case "midi_message_received":
-             midi_received.innerHTML = data.params["text"];
+             midi_received.innerHTML += data.params["text"]+"\n";
             break;
 
     }
