@@ -33,7 +33,6 @@ class MidiBridge:
         SongMapping.assign_songs_to_list(self.cmd_list,select_clip_func,play_func)
 
     def set_callback(self, callback):
-        print("set callback to", str(callback))
         self.callback = callback
 
     @staticmethod
