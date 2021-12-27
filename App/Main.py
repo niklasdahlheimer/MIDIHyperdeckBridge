@@ -11,7 +11,8 @@ import WebUI
 
 async def main(loop, args):
     hyperdeck = HyperDeck.HyperDeck(args.address, 9993)
-    # await hyperdeck.connect()
+    if not args.test:
+        await hyperdeck.connect()
     midi_bridge = MidiBridge.MidiBridge(hyperdeck)
     webui = WebUI.WebUI()
     await webui.start(hyperdeck, midi_bridge)
@@ -34,6 +35,8 @@ if __name__ == "__main__":
     # Parse command line arguments
     parser = argparse.ArgumentParser()
     parser.add_argument("address", type=str, help="IP address of the HyperDeck to connect to")
+    parser.add_argument("-t", "--test", action='store_true',
+                        help="Start without awaiting hyperdeck connection to just test midi input")
     args = parser.parse_args()
 
     # Run the application with the user arguments
